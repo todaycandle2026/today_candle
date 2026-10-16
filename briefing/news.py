@@ -82,11 +82,12 @@ def parse_rss(xml_text: bytes | str, names: tuple[str, ...], since: datetime) ->
 
 
 def _strip_source(title: str, source: str) -> str:
-    """Google 뉴스 제목 끝의 ' - 매체명'을 뗍니다."""
+    """Google 뉴스 제목 끝의 ' - 매체명'과 섹션 이름을 뗍니다."""
     title = title.strip()
     if source and title.endswith(f" - {source}"):
-        return title[: -len(source) - 3].strip()
-    return title
+        title = title[: -len(source) - 3].strip()
+    # 일부 매체는 제목 끝에 ' : 사회' 같은 섹션 이름을 붙입니다.
+    return re.sub(r"\s+:\s+[^:\s]{1,6}$", "", title)
 
 
 def _published(value: str | None) -> datetime | None:
