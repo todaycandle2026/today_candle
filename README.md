@@ -22,7 +22,7 @@ python3 -m briefing.pdf --report out/charts/373220_report.json --news out/373220
 python3 -m briefing.scheduled --code 373220 --out-dir out
 ```
 
-일봉 계산, 뉴스 수집, PDF 생성을 한 번에 합니다. 주말과 한국거래소 휴장일에는 `SKIP:`만 출력하고 끝냅니다. 달력에 없는 임시 휴장일(선거일 등)은 10시 이후 오늘 일봉이 없으면 휴장일로 봅니다.
+일봉 계산, 뉴스 수집, PDF 생성을 한 번에 합니다. `--publish --repo .`를 붙이면 결과를 GitHub Pages(`gh-pages` 브랜치)에도 올립니다. 웹페이지 첫 화면은 가장 최근 보고서이고, `archive.html`에서 최근 30일 보고서를 볼 수 있습니다. `gh-pages`는 매번 커밋 하나로 새로 만들어 강제 푸시합니다. 주말과 한국거래소 휴장일에는 `SKIP:`만 출력하고 끝냅니다. 달력에 없는 임시 휴장일(선거일 등)은 10시 이후 오늘 일봉이 없으면 휴장일로 봅니다.
 
 ## 구성
 
@@ -36,4 +36,5 @@ python3 -m briefing.scheduled --code 373220 --out-dir out
 | `briefing/news.py` | 뉴스 수집 (Google 뉴스 RSS) |
 | `briefing/pdf.py` | PDF 생성 |
 | `briefing/scheduled.py` | 예약 실행 (휴장일 건너뜀) |
+| `briefing/publish.py` | GitHub Pages 게시 (최신 보고서 + 지난 보고서 목록) |
 | `briefing/retail_candle/` | 삼성전자 개인 대량 순매수 캔들 차트. 투자자별 매매 데이터를 키움 API(`kiwoom` 패키지, 등록 IP)로 받으므로 키움 환경에서만 실행됩니다. |

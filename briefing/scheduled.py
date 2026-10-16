@@ -3,6 +3,7 @@
     python3 -m briefing.scheduled --code 373220 --out-dir out
 
 마지막 줄에 ``PDF: <경로>`` 또는 ``SKIP: <이유>``를 출력합니다.
+``--publish``를 주면 결과를 GitHub Pages(gh-pages 브랜치)에도 올립니다(briefing.publish).
 
 휴장일 판정
 1. 주말이거나 한국거래소 달력(exchange_calendars XKRX)에서 휴장일이면 건너뜁니다.
@@ -17,6 +18,7 @@ from pathlib import Path
 
 from briefing.news import fetch_news
 from briefing.pdf import write_pdf
+from briefing.publish import BRANCH, publish
 from briefing.run import KST, NAMES, build_report
 
 DATA_CHECK_AFTER = time(10, 0)  # 이 시각 이후에는 오늘 일봉이 있어야 거래일입니다.
@@ -43,6 +45,8 @@ def main() -> None:
     parser.add_argument("--code", default="373220", help="종목코드")
     parser.add_argument("--out-dir", default="out", help="결과를 저장할 폴더")
     parser.add_argument("--news-days", type=int, default=3, help="뉴스를 볼 기간(일)")
+    parser.add_argument("--publish", action="store_true", help="결과를 GitHub Pages에 올림")
+    parser.add_argument("--repo", default=".", help="today_candle 저장소 경로 (--publish 때 origin으로 푸시)")
     args = parser.parse_args()
 
     now = datetime.now(KST)
@@ -66,6 +70,9 @@ def main() -> None:
     candle = report["candle"]
     close_name = "현재가" if report["provisional"] else "종가"
     print(f"{report['name']} {close_name} {candle['close']:,.0f}원 ({candle['change_pct']:+.2f}%) · 뉴스 {len(news['items'])}건")
+    if args.publish:
+        publish(report, news, pdf_path, out, Path(args.repo))
+        print(f"PUBLISHED: {BRANCH}")
     print(f"PDF: {pdf_path}")
 
 
