@@ -19,6 +19,8 @@ NAMES = {"373220": "LG에너지솔루션"}  # 보고서 제목과 PDF 파일명�
 KST = ZoneInfo("Asia/Seoul")
 MARKET_OPEN = time(9, 0)
 MARKET_CLOSE = time(15, 30)
+# 장 마감 뒤에도 넥스트레이드(NXT) 애프터마켓이 20시까지 열려 일봉 종가·거래량이 계속 바뀝니다.
+AFTER_MARKET_CLOSE = time(20, 0)
 SLOTS = {
     "pre": "장 시작 전",
     "mid": "장중",
@@ -39,8 +41,8 @@ def build_report(code: str, now: datetime | None = None, chart_dir: str | None =
     today = now.strftime("%Y%m%d")
     min_rows = max(min_rows_required(), bars_required()) if chart_dir else min_rows_required()
     bars = fetch_daily_bars(code, today, min_rows)
-    # 장중에는 당일 캔들과 거래량이 아직 확정되지 않았습니다.
-    provisional = bars["date"].iloc[-1] == today and now.time() < MARKET_CLOSE
+    # 장중과 애프터마켓(20시 전)에는 당일 캔들과 거래량이 아직 확정되지 않았습니다.
+    provisional = bars["date"].iloc[-1] == today and now.time() < AFTER_MARKET_CLOSE
     report = analyze(bars, provisional=provisional)
     report["code"] = code
     report["name"] = NAMES.get(code, code)

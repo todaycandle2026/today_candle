@@ -25,6 +25,7 @@ from pathlib import Path
 
 from briefing.pdf import build_html
 from briefing.run import KST, SLOTS
+from briefing.signals import state_label
 
 BRANCH = "gh-pages"
 KEEP_DAYS = 30
@@ -71,6 +72,7 @@ def build_site(site: Path, report: dict, news: dict, pdf_path: Path, now: dateti
         "code": report["code"],
         "date": report["date"],
         "provisional": report["provisional"],
+        "state": state_label(report),
         "close": report["candle"]["close"],
         "change_pct": report["candle"]["change_pct"],
         "news_count": len(news.get("items") or []),
@@ -93,7 +95,7 @@ def build_site(site: Path, report: dict, news: dict, pdf_path: Path, now: dateti
 
 
 def _page(html_text: str, meta: dict, prefix: str) -> str:
-    state = "장중 잠정" if meta["provisional"] else "확정"
+    state = meta["state"]
     nav = (
         f"<nav><strong>{escape(meta['name'])} 브리핑</strong>"
         f"<span>{meta['generated_at']} · {meta['slot']} · {meta['date']} 일봉 ({state})</span>"

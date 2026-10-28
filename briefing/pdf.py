@@ -15,6 +15,7 @@ from html import escape
 from pathlib import Path
 
 from briefing.run import SLOTS
+from briefing.signals import state_label
 
 import os
 
@@ -73,7 +74,7 @@ def build_html(report: dict, news: dict) -> str:
     parts = [
         f"<h1>{escape(name)} ({report['code']}) 브리핑</h1>",
         f"<p class='meta'>{report['generated_at']} 생성 · {slot} · {report['date']} 일봉 "
-        f"({'장중 잠정' if report['provisional'] else '확정'})</p>",
+        f"({state_label(report)})</p>",
         f"<p class='summary'>{slot} {close_name} {candle['close']:,.0f}원 ({candle['change_pct']:+.2f}%) · "
         f"{candle['type']} · 이평 배열 {report['ma_alignment']} · 이평선 간격 {spread['trend']}</p>",
         "<h2>차트</h2>",

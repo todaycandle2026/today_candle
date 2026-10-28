@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 
 from briefing.channel import MID_TERM, MID_TERM_BIG, SHORT_TERM_DAILY, find_channel, line_value
-from briefing.signals import MA_PERIODS
+from briefing.signals import MA_PERIODS, state_label
 
 DAILY_BARS = 240  # 일봉 차트에 그리는 봉 수
 UP, DOWN = "#e34948", "#2a78d6"  # 양봉, 음봉
@@ -174,7 +174,7 @@ def _open_svg(width: int, height: int, title: str) -> list[str]:
 
 
 def _title(report: dict, subject: str) -> str:
-    state = "장중 잠정" if report["provisional"] else "확정"
+    state = state_label(report)
     return f"[{report['code']}] {subject} · {report['date']} 일봉 ({state}) · 조회 {report['generated_at']}"
 
 

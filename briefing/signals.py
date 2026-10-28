@@ -20,6 +20,13 @@ class Thresholds:
     history_days: int = 5
 
 
+def state_label(report: dict) -> str:
+    """일봉 확정 상태 문구. 장 마감 뒤 20시 전은 애프터마켓 거래가 반영되는 중입니다."""
+    if not report["provisional"]:
+        return "확정"
+    return "장중 잠정" if report["slot"] == "mid" else "애프터마켓 반영 중, 잠정"
+
+
 def min_rows_required(thresholds: Thresholds = Thresholds()) -> int:
     return max(MA_PERIODS) + thresholds.spread_lookback_days + thresholds.history_days
 
