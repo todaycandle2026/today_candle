@@ -15,12 +15,15 @@ class Horizon:
     lookback: int | None  # 최근 이 봉 수 안의 고점·저점만 씁니다. None이면 보이는 봉 전체.
     parallel: bool = False  # True면 하단선을 저점 하나에서 상단선과 평행하게 긋습니다.
     # 평행 하단선의 기점: "first_low"는 상단선 시작 뒤 첫 저점,
-    # "support"는 저점들을 잇는 하단선(평행이 아닌 선)이 처음 닿은 저점입니다.
+    # "support"는 저점들을 잇는 하단선(평행이 아닌 선)이 처음 닿은 저점,
+    # "lowest"는 lookback 구간 안의 최저점(상승이 시작된 바닥)입니다.
     anchor: str = "first_low"
 
 
 MID_TERM = Horizon(pivot_window=5, min_span=20, lookback=None, parallel=True)
 SHORT_TERM = Horizon(pivot_window=3, min_span=5, lookback=60, parallel=True)
+# 일봉 브리핑 차트의 단기 추세선: 하단선을 최근 70봉 안 최저점에서 상단선과 평행하게 긋습니다.
+SHORT_TERM_DAILY = Horizon(pivot_window=3, min_span=5, lookback=70, parallel=True, anchor="lowest")
 MID_TERM_BIG = Horizon(pivot_window=5, min_span=20, lookback=None, parallel=True, anchor="support")
 
 
@@ -58,6 +61,9 @@ def _parallel_lower(prices: list[float], horizon: Horizon, upper: dict) -> dict 
     if horizon.anchor == "support":
         support = _line(prices, horizon, upper=False)
         first_low = support and support["touches"][0]
+    elif horizon.anchor == "lowest":
+        first = 0 if horizon.lookback is None else max(len(prices) - horizon.lookback, 0)
+        first_low = min(range(first, len(prices)), key=lambda index: prices[index])
     else:
         first_low = next((pivot for pivot in _pivots(prices, horizon, upper=False) if pivot > upper["start"]), None)
     if first_low is None:

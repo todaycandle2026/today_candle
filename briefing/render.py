@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from briefing.channel import MID_TERM, MID_TERM_BIG, SHORT_TERM, find_channel, line_value
+from briefing.channel import MID_TERM, MID_TERM_BIG, SHORT_TERM_DAILY, find_channel, line_value
 from briefing.signals import MA_PERIODS
 
 DAILY_BARS = 240  # 일봉 차트에 그리는 봉 수
@@ -13,7 +13,7 @@ INK, SUB, MUTED, GRID = "#0b0b0b", "#52514e", "#898781", "#e1e0d9"
 TRENDLINES = (
     ("중기 추세선", MID_TERM, "#c2188f", "7 4", ("upper", "lower")),
     ("중기 큰 추세", MID_TERM_BIG, "#000000", "10 3 2 3", ("lower",)),
-    ("단기 추세선", SHORT_TERM, "#0e8fb5", "3 3", ("upper", "lower")),
+    ("단기 추세선", SHORT_TERM_DAILY, "#0e8fb5", "3 3", ("upper", "lower")),
 )
 CHANNEL_NAMES = {"upper": "상단", "lower": "하단"}
 MA_COLORS = dict(zip(MA_PERIODS, ("#eda100", "#1baf7a", "#6250d6", "#eb6834", "#52514e")))
